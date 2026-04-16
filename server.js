@@ -13,8 +13,20 @@ const clientesRoutes = require('./routes/clientes');
 const app = express();
  
 // Middlewares
-app.use(cors());                    // Permite que la app móvil se conecte
-app.use(express.json());            // Permite leer JSON en las peticiones
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));                   // Permite que la app móvil se conecte
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});            // Permite leer JSON en las peticiones
  
 // Rutas
 app.use('/api/auth', authRoutes);
